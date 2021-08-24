@@ -26,8 +26,7 @@ export default class App extends Component {
       };
       this.deleteItem = this.deleteItem.bind(this);
       this.addItem = this.addItem.bind(this);
-      this.onToggleImportant = this.onToggleImportant.bind(this);
-      this.onToggleLiked = this.onToggleLiked.bind(this);
+      this.onToggleStatus = this.onToggleStatus.bind(this);
       this.onUpdateSearch = this.onUpdateSearch.bind(this);
       this.onFilterSelect = this.onFilterSelect.bind(this);
       this.id = '';
@@ -72,37 +71,27 @@ export default class App extends Component {
       return this.id;
    }
 
-   onToggleImportant(id) {
+   onToggleStatus(value, id) {
+
       this.setState(({ data }) => {
          const index = data.findIndex(elem => elem.id === id);
-
          const old = data[index];
-         const newItem = { ...old, important: !old.important };
+         let newItem;
+         let newArr;
 
-         const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+         if (value === 'important') {
+            newItem = { ...old, important: !old.important };
+         } else {
+            newItem = { ...old, like: !old.like };
+         }
+
+         newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
 
          return {
             data: newArr
          }
       })
    }
-
-   onToggleLiked(id) {
-      this.setState(({ data }) => {
-         const index = data.findIndex(elem => elem.id === id);
-
-         const old = data[index];
-         const newItem = { ...old, like: !old.like };
-
-         const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-
-         return {
-            data: newArr
-         }
-      })
-   }
-
-
 
    searchPost(items, term) {
       if (term.length === 0) {
@@ -153,8 +142,7 @@ export default class App extends Component {
             <PostList
                posts={visiblePosts}
                onDelete={this.deleteItem}
-               onToggleImportant={this.onToggleImportant}
-               onToggleLiked={this.onToggleLiked}
+               onToggleStatus={this.onToggleStatus}
             />
             <PostAddForm
                onAdd={this.addItem} />
